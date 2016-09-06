@@ -1,5 +1,7 @@
 <?php
 
+set_time_limit(15);
+
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 (new josegonzalez\Dotenv\Loader(dirname(__DIR__) . '/.env'))->parse()->toEnv();
