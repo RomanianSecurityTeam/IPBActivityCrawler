@@ -1,0 +1,17 @@
+{
+    "name": "gecko/ipbfeedr",
+    "authors": [
+        {
+            "name": "Gecko",
+            "email": "gecko@techie.org"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^6.2",
+        "illuminate/database": "^5.3",
+        "josegonzalez/dotenv": "^2.0"
+    },
+    "autoload": {
+        "classmap": ["includes/"]
+    }
+}
