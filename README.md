@@ -1,5 +1,16 @@
 # IPBActivityCrawler
 
+Description
+---
+
+This PHP script scans the activity page of a IP Board 4 platform and creates a database with the contents to be displayed in another project.
+
+It simply does the hard part for you.
+
+It includes an API which you can access at `GET server.dev/index.php?lastId=0`.
+
+Just pass in the lastId GET parameter to retrieve the latest 20 rows in the database in JSON format.
+
 Instructions
 ---
 
@@ -29,6 +40,21 @@ $ php includes/install.php
 ```
 
 You can remove it after the installation is done, although it's not going to do you any harm if you keep it.
+
+Running
+---
+
+The way I recommend you run it is as a cron task, but you can run it however you want.
+
+```
+$ crontab -e
+```
+
+Add a new task which triggers every minute:
+
+```
+* * * * * /path/to/RSTActivityCrawler/index.php?run > /dev/null
+```
 
 Updates
 ---
