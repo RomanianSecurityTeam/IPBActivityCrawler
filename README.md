@@ -11,6 +11,7 @@ It includes an API which you can access at `GET server.dev/index.php?lastId=0`.
 
 Just pass in the lastId GET parameter to retrieve the latest 20 rows in the database in JSON format.
 
+
 Instructions
 ---
 
