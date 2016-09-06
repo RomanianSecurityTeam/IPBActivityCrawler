@@ -49,6 +49,17 @@ class API
                     break;
             }
         }
+
+        $this->cleanOldData();
+    }
+
+    private function cleanOldData()
+    {
+        $lastTwentyIds = array_map(function ($item) {
+            return $item->id;
+        }, Capsule::table('activity')->orderBy('id', 'desc')->take(20)->get(['id'])->toArray());
+
+        Capsule::table('activity')->whereNotIn('id', $lastTwentyIds)->delete();
     }
 
     private function body($url, $config = null)
