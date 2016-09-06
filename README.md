@@ -53,7 +53,7 @@ $ crontab -e
 Add a new task which triggers every minute:
 
 ```
-* * * * * /path/to/RSTActivityCrawler/index.php?run > /dev/null
+* * * * * /path/to/RSTActivityCrawler/index.php run > /dev/null
 ```
 
 Updates
