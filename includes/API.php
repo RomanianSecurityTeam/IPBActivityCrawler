@@ -24,7 +24,9 @@ class API
 
         preg_match_all("#<li class='ipsStreamItem .*?>(.*?)</li>#si", $html, $results);
 
-        foreach ($results[1] as $activity) {
+        $results = array_reverse($results[1]);
+
+        foreach ($results as $activity) {
             switch (true) {
                 case preg_match("#</a> started following.*?s profile#", $activity):
                     $this->insertFollowMessage($activity, 'user');
