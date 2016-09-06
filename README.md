@@ -66,12 +66,13 @@ $ git pull
 $ composer update
 ```
 
-If you have made changes, you need to re-do all the steps from the Instructions section below, then re-apply your changes. ALternatively, you can stash your changes, pull then apply the stashde changes and remove any conflicts you might encounter.
+If you have made changes, you need to re-do all the steps from the Instructions section below, then re-apply your changes. Alternatively, you can stash your changes, pull then apply the stashde changes and remove any conflicts you might encounter.
 
 ```
 $ git stash
 $ git pull
 $ git stash apply
+$ composer update
 ```
 
 Enjoy!
