@@ -26,7 +26,7 @@ class API
 
         foreach ($results[1] as $activity) {
             switch (true) {
-                case preg_match("#</a> started following.*?'s profile'#", $activity):
+                case preg_match("#</a> started following.*?s profile#", $activity):
                     $this->insertFollowMessage($activity, 'user');
                     break;
                 case preg_match("#</a> started following#", $activity):
