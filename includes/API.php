@@ -3,6 +3,7 @@
 namespace Feedr;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\FileCookieJar;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 class API
@@ -10,12 +11,13 @@ class API
     use Traits\PostingTypes;
 
     const ACTIVITY_URL = 'https://rstforums.com/forum/discover/';
+    const AUTH_URL = 'https://rstforums.com/forum/login/';
 
     private $client;
 
     public function __construct()
     {
-        $this->client = new Client;
+        $this->login();
     }
 
     public function parseActivity()
@@ -28,10 +30,10 @@ class API
 
         foreach ($results as $activity) {
             switch (true) {
-                case preg_match("#</a> started following.*?s profile#", $activity):
+                case preg_match("#</a> started following.*?forum/profile#", $activity):
                     $this->insertFollowMessage($activity, 'user');
                     break;
-                case preg_match("#</a> started following#", $activity):
+                case preg_match("#</a> started following.*?forum/topic#", $activity):
                     $this->insertFollowMessage($activity, 'thread');
                     break;
                 case preg_match("#title='Post'><i class='fa fa-comment'>#", $activity):
@@ -79,5 +81,28 @@ class API
                 $item->date = date('Y-m-d H:i:s', strtotime($item->created_at));
             })
             ->toJSON());
+    }
+
+    private function login()
+    {
+        $user = env('USER');
+        $pass = env('PASS');
+
+        $this->client = new Client(['cookies' => true]);
+
+        $html = $this->body(static::AUTH_URL);
+        $csrfKey = match('#name="csrfKey" value="(.*?)"#i', $html);
+        $this->client->post(static::AUTH_URL, [
+            'headers'     => ['Referer' => static::AUTH_URL],
+            'form_params' => [
+                'login__standard_submitted' => 1,
+                'csrfKey'                   => $csrfKey,
+                'auth'                      => $user,
+                'password'                  => $pass,
+                'remember_me'               => 0,
+                'remember_me_checkbox'      => 1,
+                'signin_anonymous'          => 0,
+            ],
+        ]);
     }
 }

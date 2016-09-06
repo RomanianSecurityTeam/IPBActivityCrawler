@@ -11,7 +11,8 @@ trait PostingTypes
         $author = $data['author'];
         $data['content'] = isset($data['content']) ? preg_replace('/\n\n\n/', "\n", $data['content']) : '';
         $data['content'] = preg_replace('/\n/', '<br/>', $data['content']);
-        $data['created_at'] = date('Y-m-d H:i:s', strtotime(env('TZ_OFFSET', '+3') . ' hours', strtotime($data['created_at'])));
+        $created_at = $data['created_at']
+            = date('Y-m-d H:i:s', strtotime(env('TZ_OFFSET', '+3') . ' hours', strtotime($data['created_at'])));
 
         return Capsule::table('activity')->updateOrInsert(compact('author', 'created_at'), $data);
     }
@@ -40,8 +41,8 @@ trait PostingTypes
         preg_match("#<a href=.*?/forum/(profile/.*?)['\"].*?>(.*?)</a>.*?<a href=.*?/forum/((?:topic|profile)/.*?)['\"].*?>(.*?)</a>.*?<time datetime=.(.*?)Z#si", $raw, $parsed);
 
         if ($type == 'follow_thread') {
-            list(, $author_path, $author, $title, $path, $created_at) = $parsed;
-            $this->insert(compact('type', 'author_path', 'author', 'title', 'path', 'created_at'));
+            list(, $author_path, $author, $path, $title, $created_at) = $parsed;
+            $this->insert(compact('type', 'author_path', 'author', 'path', 'title', 'created_at'));
         } else {
             list(, $author_path, $author, $target_path, $target, $created_at) = $parsed;
             $this->insert(compact('type', 'author_path', 'author', 'target_path', 'target', 'created_at'));
@@ -60,7 +61,7 @@ trait PostingTypes
     private function insertRepMessage($raw)
     {
         $type = 'rep';
-        preg_match("#<a href=\".*?/forum/(profile/.*?)\".*?>(.*?)</a>.*?gave ([a-z]+) reputation.*?<a href=./(topic/.*?).*?>(.*?)</a>.*?<time datetime=.(.*?)Z#si", $raw, $parsed);
+        preg_match("#<a href=.*?/forum/(profile/[^\"']+).*?>(.*?)</a>.*?gave ([a-z]+) reputation.*?<a href=.*?/(topic/[^\"']+).*?>(.*?)</a>.*?<time datetime=.(.*?)Z#si", $raw, $parsed);
 
         list(, $author_path, $author, $title, $target_path, $target, $created_at) = $parsed;
         $this->insert(compact('type', 'author_path', 'author', 'title', 'target_path', 'target', 'created_at'));
