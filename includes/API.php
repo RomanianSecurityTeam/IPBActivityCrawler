@@ -59,7 +59,7 @@ class API
     {
         $lastTwentyIds = array_map(function ($item) {
             return $item->id;
-        }, Capsule::table('activity')->orderBy('id', 'desc')->take(20)->get(['id'])->toArray());
+        }, Capsule::table('activity')->orderBy('id', 'desc')->take(50)->get(['id'])->toArray());
 
         Capsule::table('activity')->whereNotIn('id', $lastTwentyIds)->delete();
     }
@@ -74,7 +74,6 @@ class API
         die(Capsule::table('activity')
             ->where('id', '>', (int) $lastId)
             ->orderBy('id', 'asc')
-            ->take(20)
             ->get()
             ->each(function ($item) {
                 $item->date = date('Y-m-d H:i:s', strtotime($item->created_at));
