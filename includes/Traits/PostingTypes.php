@@ -8,13 +8,14 @@ trait PostingTypes
 {
     private function insert($data)
     {
+        $type = $data['type'];
         $author = $data['author'];
         $data['content'] = isset($data['content']) ? preg_replace('/\n\n\n/', "\n", $data['content']) : '';
         $data['content'] = preg_replace('/\n/', '<br/>', $data['content']);
         $created_at = $data['created_at']
             = date('Y-m-d H:i:s', strtotime(env('TZ_OFFSET', '+3') . ' hours', strtotime($data['created_at'])));
 
-        return Capsule::table('activity')->updateOrInsert(compact('author', 'created_at'), $data);
+        return Capsule::table('activity')->updateOrInsert(compact('type', 'author', 'created_at'), $data);
     }
 
     private function insertPostMessage($raw)
