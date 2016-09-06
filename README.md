@@ -3,7 +3,7 @@
 Description
 ---
 
-This PHP script scans the activity page of a IP Board 4 platform and creates a database with the contents to be displayed in another project.
+This PHP script scans the activity page of an IP Board 4 platform and creates a database with the contents to be displayed in another project.
 
 It simply does the hard part for you.
 
