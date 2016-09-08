@@ -10,7 +10,7 @@ if (! Capsule::schema()->hasTable('activity')) {
         $table->enum('type', ['rep', 'post', 'topic', 'join', 'follow_thread', 'follow_user', 'profile_photo_change']);
         $table->string('path')->nullable();
         $table->string('title')->nullable();
-        $table->longText('content')->nullable();
+        $table->string('content', 1024)->nullable();
         $table->string('author')->nullable();
         $table->string('author_path')->nullable();
         $table->string('author_photo')->nullable();
