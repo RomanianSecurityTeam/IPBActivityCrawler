@@ -10,7 +10,7 @@ trait PostingTypes
     {
         $type = $data['type'];
         $author = $data['author'];
-        $data['content'] = preg_replace('/\n/', ' ', $data['content']);
+        $data['content'] = preg_replace('/\n/', '<br/>', $data['content'] ?: '');
         $created_at = $data['created_at']
             = date('Y-m-d H:i:s', strtotime(env('TZ_OFFSET', '+3') . ' hours', strtotime($data['created_at'])));
 
