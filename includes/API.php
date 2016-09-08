@@ -17,7 +17,10 @@ class API
 
     public function __construct()
     {
-        $this->login();
+        $cookieFile = dirname(__DIR__) . '/temp/cookie';
+        $cookieJar = new FileCookieJar($cookieFile);
+
+        $this->client = new Client(['cookies' => $cookieJar]);
     }
 
     public function parseActivity()
@@ -68,29 +71,20 @@ class API
 
     private function body($url, $config = null)
     {
-        return $this->client->get($url, $config)->getBody()->getContents();
+        $html = $this->client->get($url, $config)->getBody()->getContents();
+
+        if ($this->isLoggedIn($html)) {
+            return $html;
+        }
+
+        return $this->login($html, $url, $config);
     }
 
-    public function getData($lastId)
-    {
-        die(Capsule::table('activity')
-            ->where('id', '>', (int) $lastId)
-            ->orderBy('id', 'asc')
-            ->get()
-            ->each(function ($item) {
-                $item->date = date('Y-m-d H:i:s', strtotime($item->created_at));
-            })
-            ->toJSON());
-    }
-
-    private function login()
+    private function login($html, $url, $config = null)
     {
         $user = env('USER');
         $pass = env('PASS');
 
-        $this->client = new Client(['cookies' => true]);
-
-        $html = $this->body(static::AUTH_URL);
         $csrfKey = match('#name="csrfKey" value="(.*?)"#i', $html);
         $this->client->post(static::AUTH_URL, [
             'headers'     => ['Referer' => static::AUTH_URL],
@@ -104,5 +98,24 @@ class API
                 'signin_anonymous'          => 0,
             ],
         ]);
+
+        return $this->client->get($url, $config)->getBody()->getContents();
+    }
+
+    private function isLoggedIn($html)
+    {
+        return preg_match('/do=logout&amp;/i', $html);
+    }
+
+    public function getData($lastId)
+    {
+        die(Capsule::table('activity')
+            ->where('id', '>', (int) $lastId)
+            ->orderBy('id', 'asc')
+            ->get()
+            ->each(function ($item) {
+                $item->date = date('Y-m-d H:i:s', strtotime($item->created_at));
+            })
+            ->toJSON());
     }
 }
